@@ -426,12 +426,6 @@ def main():
             if bird.state == "hyper": #hyperモードの時
                 exps.add(Explosion(bomb, 50))  #爆弾が爆発する
                 score.score_up(1)  #スコアを上げる
-            if len(pg.sprite.spritecollide(bird, bombs, True)) != 0:
-                    bird.change_img(8, screen) # こうかとん悲しみエフェクト
-                    score.update(screen)
-                    pg.display.update()
-                    time.sleep(2)
-                    return
             else:
                 bird.change_img(8, screen)
                 score.update(screen)
