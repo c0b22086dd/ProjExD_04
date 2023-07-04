@@ -309,9 +309,9 @@ def main():
             score.score_up(1)  # 1点アップ
 
         if event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT:  #右shiftを押したとき
-            if score.score >= 10:  #スコアが10以上の時
+            if score.score >= 100:  #スコアが100以上の時
                 bird.change_state("hyper", 500)  #hyperモードに切り替える
-                score.score -= 10  #スコアを10減らす
+                score.score -= 100  #スコアを100減らす
 
         for bomb in pg.sprite.spritecollide(bird, bombs, True):  #こうかとんが爆弾に衝突したとき
             if bird.state == "hyper": #hyperモードの時
