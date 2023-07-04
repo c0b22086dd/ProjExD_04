@@ -387,6 +387,13 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_CAPSLOCK and len(shields) == 0 and score.score > 50:
                 shields.add(Shield(bird, 400))
                 score.score_down(50)
+            if event.type == pg.KEYDOWN and event.key == pg.K_TAB \
+                and score.get_score() > 50\
+                and len(gravities) == 0:
+                 # TABキーを押している,かつ,スコアが50より大きい
+                 # かつ,gravitiesグループに他にgravityインスタンスがない
+                score.score_up(-50)
+                gravities.add(Gravity(bird, 200, 500)) # size（半径）を200、life（発動時間）を500に設定したGravityをgravitiesグループに追加
         screen.blit(bg_img, [0, 0])
 
         if tmr%200 == 0:  # 200フレームに1回，敵機を出現させる
@@ -419,22 +426,12 @@ def main():
             if bird.state == "hyper": #hyperモードの時
                 exps.add(Explosion(bomb, 50))  #爆弾が爆発する
                 score.score_up(1)  #スコアを上げる
-
-
-        for bomb in pg.sprite.groupcollide(bombs, gravities, True, False).keys(): # bombとgravitiesの衝突判定。bombのみ消える
-            exps.add(Explosion(bomb, 50))  # 爆発エフェクト
-            score.score_up(1) # 1点アップ
-        
-        gravities.update()
-        gravities.draw(screen)
-
-        if len(pg.sprite.spritecollide(bird, bombs, True)) != 0:
-            bird.change_img(8, screen) # こうかとん悲しみエフェクト
-            score.update(screen)
-            pg.display.update()
-            time.sleep(2)
-            return
-
+            if len(pg.sprite.spritecollide(bird, bombs, True)) != 0:
+                    bird.change_img(8, screen) # こうかとん悲しみエフェクト
+                    score.update(screen)
+                    pg.display.update()
+                    time.sleep(2)
+                    return
             else:
                 bird.change_img(8, screen)
                 score.update(screen)
@@ -443,13 +440,9 @@ def main():
                 return
 
 
-        if event.type == pg.KEYDOWN and event.key == pg.K_TAB \
-                and score.get_score() > 50\
-                and len(gravities) == 0:
-                 # TABキーを押している,かつ,スコアが50より大きい
-                 # かつ,gravitiesグループに他にgravityインスタンスがない
-                score.score_up(-50)
-                gravities.add(Gravity(bird, 200, 500)) # size（半径）を200、life（発動時間）を500に設定したGravityをgravitiesグループに追加
+        for bomb in pg.sprite.groupcollide(bombs, gravities, True, False).keys(): # bombとgravitiesの衝突判定。bombのみ消える
+            exps.add(Explosion(bomb, 50))  # 爆発エフェクト
+            score.score_up(1) # 1点アップ
 
         bird.update(key_lst, screen)
         beams.update()
@@ -461,12 +454,10 @@ def main():
         exps.update()
         exps.draw(screen)
         score.update(screen)
-
-
-
+        gravities.update()
+        gravities.draw(screen)
         shields.update()
         shields.draw(screen)
-
         pg.display.update()
         tmr += 1
         clock.tick(50)
