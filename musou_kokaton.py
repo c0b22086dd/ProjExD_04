@@ -145,7 +145,7 @@ class Beam(pg.sprite.Sprite):
     """
     ビームに関するクラス
     """
-    def __init__(self, bird: Bird):
+    def __init__(self, bird: Bird, kai: float=0):
         """
         ビーム画像Surfaceを生成する
         引数 bird：ビームを放つこうかとん
@@ -153,9 +153,9 @@ class Beam(pg.sprite.Sprite):
         super().__init__()
         self.vx, self.vy = bird.get_direction()
         angle = math.degrees(math.atan2(-self.vy, self.vx))
-        self.image = pg.transform.rotozoom(pg.image.load(f"ex04/fig/beam.png"), angle, 2.0)
-        self.vx = math.cos(math.radians(angle))
-        self.vy = -math.sin(math.radians(angle))
+        self.image = pg.transform.rotozoom(pg.image.load(f"ex04/fig/beam.png"), angle+kai, 2.0)
+        self.vx = math.cos(math.radians(angle+kai))
+        self.vy = -math.sin(math.radians(angle+kai))
         self.rect = self.image.get_rect()
         self.rect.centery = bird.rect.centery+bird.rect.height*self.vy
         self.rect.centerx = bird.rect.centerx+bird.rect.width*self.vx
@@ -249,6 +249,31 @@ class Score:
         screen.blit(self.image, self.rect)
 
 
+class NeoBeam:
+    """
+    左Shiftキーを押下しながらスペースキーを
+    押すと弾幕が出る。
+    """
+    def __init__(self, bird: Bird, num: int):
+        """
+        複数方向のビームの生成
+        引数１：ビームを発射するこうかとん
+        引数２：一度に発射されるビームの数
+        """
+        self.bird = bird
+        self.num = num
+        
+    def gen_beams(self):
+        """
+        self.birdからself.num個のビームを生成
+        """
+        m = list()
+        for angle in range(-51, 51, int(100/(self.num-1))):
+            beam = Beam(self.bird, angle)
+            m.append(beam)
+        return m 
+
+
 def main():
     pg.display.set_caption("真！こうかとん無双")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -268,7 +293,11 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return 0
-            if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+            if event.type == pg.KEYDOWN and event.key == pg.K_SPACE and key_lst[pg.K_LSHIFT]:
+                neobeam = NeoBeam(bird, 5)
+                beam_lst= neobeam.gen_beams()
+                beams.add(beam_lst)
+            elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beams.add(Beam(bird))
         screen.blit(bg_img, [0, 0])
 
