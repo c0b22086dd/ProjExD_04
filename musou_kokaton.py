@@ -71,7 +71,7 @@ class Bird(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = xy
         self.speed = 10
-
+        
     def change_img(self, num: int, screen: pg.Surface):
         """
         こうかとん画像を切り替え，画面に転送する
@@ -100,6 +100,10 @@ class Bird(pg.sprite.Sprite):
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self.dire = tuple(sum_mv)
             self.image = self.imgs[self.dire]
+        if key_lst[pg.K_LSHIFT]:
+            self.speed = 20  #高速化時のスピード
+        else:
+            self.speed = 10  #デフォルトのスピード
         screen.blit(self.image, self.rect)
     
     def get_direction(self) -> tuple[int, int]:
